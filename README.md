@@ -1,3 +1,8 @@
+# NOTE:
+
+This is forked from tanerdiler/spring-boot-microservice-eureka-zuul-docker
+
+
 # SPRING BOOT MICROCSERVICE USING SPRING CLOUD, EUREKA, RIBBON, ZUUL
 
 This project is created to get experience on **Microservices With Netflix OSS**. This is a simple project by coded imperative programming with simple business requirements.
@@ -54,8 +59,8 @@ URI for gateway : *http://localhost:8762*
 
 ## Build & Run
 
-- *>mvn clean package* : to build
-- *>docker-compose up* --build : build docker images and containers and run containers
+- *>./mvnw clean package -DskipTests* : to build
+- *>docker-compose up -d --build* : build docker images and containers and run containers
 - *>docker-compose stop* : stop the dockerized services
 - Each maven module has a Dockerfile.
 
