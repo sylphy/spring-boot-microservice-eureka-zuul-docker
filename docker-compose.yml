@@ -57,6 +57,8 @@ services:
     build:
       context: ./containerized-discovery
       dockerfile: Dockerfile
+    environment:
+      - LOGSTASH_DEST=logstash:5000
     ports:
       - "8761:8761"
 
@@ -90,6 +92,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8762:8762"
+    environment:
+      - LOGSTASH_DEST=logstash:5000
     depends_on:
       - discovery
     links:
