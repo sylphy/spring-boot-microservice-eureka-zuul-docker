@@ -1,0 +1,59 @@
+server:
+  port: ${PORT:8763}
+
+spring:
+  application:
+    name: containerized-scgateway
+  logstash:
+    dest: logstash:5000
+
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  metrics:
+    distribution:
+      percentiles-histogram.http.server.requests: false
+      percentiles.http.server.requests: 0.5, 0.9, 0.95, 0.99, 0.999
+      sla.http.server.requests: 500ms, 2000ms
+
+  cloud:
+    gateway:
+      routes:
+        - id: containerized-main
+          uri: lb://CONTAINERIZED-MAIN
+          predicates:
+            - Path=/backoffice/**
+          filters:
+            - RewritePath=/backoffice(?<segment>/?.*), $\{segment}
+        - id: containerized-accounts
+          uri: lb://CONTAINERIZED-ACCOUNTS
+          predicates:
+            - Path=/account/**
+          filters:
+            - RewritePath=/account(?<segment>/?.*), $\{segment}
+        - id: containerized-orders
+          uri: lb://CONTAINERIZED-ORDERS
+          predicates:
+            - Path=/order/**
+          filters:
+            - RewritePath=/order(?<segment>/?.*), $\{segment}
+        - id: containerized-products
+          uri: lb://CONTAINERIZED-PRODUCTS
+          predicates:
+            - Path=/product/**
+          filters:
+            - RewritePath=/product(?<segment>/?.*), $\{segment}
+    loadbalancer:
+      ribbon:
+        enabled: false
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/

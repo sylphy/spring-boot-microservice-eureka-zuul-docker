@@ -99,6 +99,22 @@ services:
     links:
       - discovery:discovery
 
+  scgateway:
+    image: wod-juiz/service-scgateway
+    container_name: service-scgateway
+    build:
+      context: ./containerized-scgateway
+      dockerfile: Dockerfile
+    ports:
+      - "8763:8763"
+    environment:
+      - LOGSTASH_DEST=logstash:5000
+    depends_on:
+      - discovery
+    links:
+      - discovery:discovery
+      - accounts:accounts
+
   accounts:
     image: tanerdiler/service-accounts-api
     container_name: service-accounts
