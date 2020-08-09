@@ -21,39 +21,19 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: containerized-main
-          uri: lb://CONTAINERIZED-MAIN
-          predicates:
-            - Path=/backoffice/**
-          filters:
-            - RewritePath=/backoffice(?<segment>/?.*), $\{segment}
         - id: containerized-accounts
           uri: lb://CONTAINERIZED-ACCOUNTS
           predicates:
-            - Path=/account/**
-          filters:
-            - RewritePath=/account(?<segment>/?.*), $\{segment}
-        - id: containerized-orders
-          uri: lb://CONTAINERIZED-ORDERS
-          predicates:
-            - Path=/order/**
-          filters:
-            - RewritePath=/order(?<segment>/?.*), $\{segment}
-        - id: containerized-products
-          uri: lb://CONTAINERIZED-PRODUCTS
-          predicates:
-            - Path=/product/**
-          filters:
-            - RewritePath=/product(?<segment>/?.*), $\{segment}
+            - Path=/api/**
     loadbalancer:
       ribbon:
         enabled: false
 
 eureka:
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
   client:
     registerWithEureka: false
-    fetchRegistry: false
+    fetchRegistry: true
     serviceUrl:
       defaultZone: http://discovery:8761/eureka/

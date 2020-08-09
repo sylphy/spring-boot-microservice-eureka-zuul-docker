@@ -99,7 +99,12 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <configuration><argLine>--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED</argLine></configuration>
+              </configuration>
+            </plugin>
 		</plugins>
 	</build>
-
 </project>

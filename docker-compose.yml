@@ -1,56 +1,6 @@
 version: '3'
 services:
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
-    container_name: service-elasticsearch
-    environment:
-      - node.name=elasticsearch
-      - cluster.name=es-docker-cluster
-#      - discovery.seed_hosts=es02,es03
-      - cluster.initial_master_nodes=elasticsearch
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-#    mem_limit: 500m
-#    cap_add:
-#      - IPC_LOCK
-#    volumes:
-#      - data01:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.8.0
-    container_name: service-kibana
-    ports:
-      - 5601:5601
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    depends_on:
-      - elasticsearch
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:7.8.0
-    container_name: service-logstash
-    command: logstash -f /usr/share/logstash/pipeline
-    volumes:
-      - ./containerized-logstash/config:/usr/share/logstash/config:ro
-      - ./containerized-logstash/pipeline:/usr/share/logstash/pipeline:ro
-    ports:
-      - "5000:5000"
-      - "12204:12204"
-    depends_on:
-      - elasticsearch
-
   discovery:
     image: tanerdiler/service-discovery
     container_name: service-discovery
@@ -62,43 +12,6 @@ services:
     ports:
       - "8761:8761"
 
-#   cassandra-node-1:
-#     hostname: cassandra-1
-#     image: cassandra:latest
-#     command: /bin/bash -c "sleep 1 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
-#     expose:
-#       - 7000
-#       - 7001
-#       - 7199
-#       - 9042
-#       - 9160
-#  cassandra-node-2:
-#    hostname: cassandra-2
-#    image: cassandra:latest
-#    command: /bin/bash -c "sleep 30 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
-#    links:
-#      - cassandra-node-1:cassandra
-#    expose:
-#      - 7000
-#      - 7001
-#      - 7199
-#      - 9042
-#      - 9160
-  gateway:
-    image: tanerdiler/service-gateway
-    container_name: service-gateway
-    build:
-      context: ./containerized-gateway
-      dockerfile: Dockerfile
-    ports:
-      - "8762:8762"
-    environment:
-      - LOGSTASH_DEST=logstash:5000
-    depends_on:
-      - discovery
-    links:
-      - discovery:discovery
-
   scgateway:
     image: wod-juiz/service-scgateway
     container_name: service-scgateway
@@ -109,10 +22,6 @@ services:
       - "8763:8763"
     environment:
       - LOGSTASH_DEST=logstash:5000
-    depends_on:
-      - discovery
-    links:
-      - discovery:discovery
 
   accounts:
     image: tanerdiler/service-accounts-api
@@ -121,54 +30,4 @@ services:
       context: ./containerized-accounts
       dockerfile: Dockerfile
     ports:
-      - "7500:2222"
-    depends_on:
-      - discovery
-#      - cassandra-node-1
-    links:
-      - discovery:discovery
-
-  products:
-    image: tanerdiler/service-products-api
-    container_name: service-products
-    build:
-      context: ./containerized-products
-      dockerfile: Dockerfile
-    ports:
-      - "7501:2222"
-    depends_on:
-      - discovery
-      - accounts
-    links:
-      - discovery:discovery
-
-  orders:
-    image: tanerdiler/service-orders-api
-    container_name: service-orders
-    build:
-      context: ./containerized-orders
-      dockerfile: Dockerfile
-    ports:
-      - "7502:2222"
-    depends_on:
-      - discovery
-      - products
-    links:
-      - discovery:discovery
-
-  main:
-    image: tanerdiler/service-main-api
-    container_name: service-main
-    build:
-      context: ./containerized-main
-      dockerfile: Dockerfile
-    ports:
-      - "7503:2222"
-    depends_on:
-      - discovery
-      - orders
-    links:
-      - discovery:discovery
-      - accounts:accounts
-      - products:products
-      - orders:orders
+      - "2222:2222"

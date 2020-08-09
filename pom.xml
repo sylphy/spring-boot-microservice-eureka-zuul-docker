@@ -27,12 +27,8 @@
 	</properties>
 
 	<modules>
-		<module>containerized-gateway</module>
 		<module>containerized-discovery</module>
 		<module>containerized-accounts</module>
-		<module>containerized-products</module>
-		<module>containerized-orders</module>
-		<module>containerized-main</module>
 		<module>containerized-scgateway</module>
 	</modules>
 
