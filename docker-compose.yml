@@ -113,7 +113,6 @@ services:
       - discovery
     links:
       - discovery:discovery
-      - accounts:accounts
 
   accounts:
     image: tanerdiler/service-accounts-api
