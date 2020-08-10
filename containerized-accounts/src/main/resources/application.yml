@@ -39,3 +39,8 @@ eureka:
 ribbon:
   eureka:
     enabled: true
+
+opentracing:
+  jaeger:
+    udp-sender:
+        host: ${JAEGER_HOST:localhost}

@@ -11,6 +11,7 @@ services:
       - HOST_NAME=discovery1
       - PORT=3001
       - ZONE=http://discovery2:3002/eureka/
+      - JAEGER_HOST=jaeger
     ports:
       - "3001:3001"
 
@@ -21,6 +22,7 @@ services:
       - HOST_NAME=discovery2
       - PORT=3002
       - ZONE=http://discovery1:3001/eureka/
+      - JAEGER_HOST=jaeger
     ports:
       - "3002:3002"
 
@@ -35,8 +37,8 @@ services:
     environment:
       - HOST_NAME=scgateway
       - PORT=5000
-      - LOGSTASH_DEST=logstash:5000
       - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
+      - JAEGER_HOST=jaeger
 
   api1:
     image: tasiraki77/service-accounts-api
@@ -50,6 +52,7 @@ services:
       - HOST_NAME=api1
       - PORT=9001
       - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
+      - JAEGER_HOST=jaeger
 
   api2:
     image: tasiraki77/service-accounts-api
@@ -60,3 +63,30 @@ services:
       - HOST_NAME=api2
       - PORT=9002
       - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
+      - JAEGER_HOST=jaeger
+
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  jaeger:
+    image: jaegertracing/all-in-one
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    ports:
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 14268:14268
+      - 9411:9411
