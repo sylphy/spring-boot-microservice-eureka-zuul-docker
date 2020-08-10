@@ -31,10 +31,10 @@ services:
       context: ./containerized-scgateway
       dockerfile: Dockerfile
     ports:
-      - "8763:8763"
+      - "5000:5000"
     environment:
       - HOST_NAME=scgateway
-      - PORT=8763
+      - PORT=5000
       - LOGSTASH_DEST=logstash:5000
       - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
 
