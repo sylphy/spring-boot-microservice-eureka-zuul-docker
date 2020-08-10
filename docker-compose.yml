@@ -1,19 +1,31 @@
 version: '3'
 services:
 
-  discovery:
-    image: tanerdiler/service-discovery
-    container_name: service-discovery
+  discovery1:
+    image: tasiraki77/service-discovery
+    container_name: discovery1
     build:
       context: ./containerized-discovery
       dockerfile: Dockerfile
     environment:
-      - LOGSTASH_DEST=logstash:5000
+      - HOST_NAME=discovery1
+      - PORT=3001
+      - ZONE=http://discovery2:3002/eureka/
     ports:
-      - "8761:8761"
+      - "3001:3001"
+
+  discovery2:
+    image: tasiraki77/service-discovery
+    container_name: discovery2
+    environment:
+      - HOST_NAME=discovery2
+      - PORT=3002
+      - ZONE=http://discovery1:3001/eureka/
+    ports:
+      - "3002:3002"
 
   scgateway:
-    image: wod-juiz/service-scgateway
+    image: tasiraki77/service-scgateway
     container_name: service-scgateway
     build:
       context: ./containerized-scgateway
@@ -21,13 +33,30 @@ services:
     ports:
       - "8763:8763"
     environment:
+      - HOST_NAME=scgateway
+      - PORT=8763
       - LOGSTASH_DEST=logstash:5000
+      - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
 
-  accounts:
-    image: tanerdiler/service-accounts-api
-    container_name: service-accounts
+  api1:
+    image: tasiraki77/service-accounts-api
+    container_name: service-api1
     build:
       context: ./containerized-accounts
       dockerfile: Dockerfile
     ports:
-      - "2222:2222"
+      - "9001:9001"
+    environment:
+      - HOST_NAME=api1
+      - PORT=9001
+      - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
+
+  api2:
+    image: tasiraki77/service-accounts-api
+    container_name: service-api2
+    ports:
+      - "9002:9002"
+    environment:
+      - HOST_NAME=api2
+      - PORT=9002
+      - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/

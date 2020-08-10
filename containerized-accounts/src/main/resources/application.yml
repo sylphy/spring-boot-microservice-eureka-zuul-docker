@@ -2,6 +2,8 @@ server:
   port: ${PORT:2222}
 
 spring:
+  main:
+    banner-mode: "off"
   application:
     name: containerized-accounts
   logging:
@@ -10,9 +12,6 @@ spring:
     level:
       org.springframework: WARN
       org.hibernate: WARN
-  logstash:
-    server: logstash
-    port: 5000
 
 management:
   endpoints:
@@ -29,11 +28,10 @@ management:
 eureka:
   client:
     serviceUrl:
-#      defaultZone: ${DISCOVERY:http://localhost:8761}/eureka/
-      defaultZone: http://discovery:8761/eureka/
+      defaultZone: ${DISCOVERY:http://localhost:8761/eureka/}
     should-use-dns: false
   instance:
-    hostname: accounts
+    hostname: ${HOST_NAME:localhost}
     preferIpAddress: false
     leaseRenewalIntervalInSeconds: 1
     leaseExpirationDurationInSeconds: 2

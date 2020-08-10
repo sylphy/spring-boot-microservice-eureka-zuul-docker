@@ -1,6 +1,7 @@
 FROM openjdk:11-jdk-slim
-MAINTAINER Taner Diler <taner.diler@gmail.com>
+MAINTAINER Takayoshi SHIRAKI <tasiraki77@gmail.com>
 ADD target/containerized-discovery-*.jar containerized-discovery.jar
-ENV LOGSTASH_DEST localhost:5000
-ENTRYPOINT ["java", "-jar", "/containerized-discovery.jar", "--spring.logstash.dest=${LOGSTASH_DEST}"]
-EXPOSE 8761
+ENV HOST_NAME discovery
+ENV PORT 8761
+ENV ZONE http://localhost:8761/eureka
+ENTRYPOINT ["java", "-jar", "/containerized-discovery.jar"]

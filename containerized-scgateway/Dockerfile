@@ -1,6 +1,7 @@
 FROM openjdk:11-jdk-slim
-MAINTAINER Taner Diler <taner.diler@gmail.com>
+MAINTAINER Takayoshi SHIRAKI <tasiraki77@gmail.com>
 ADD target/containerized-scgateway-*.jar containerized-scgateway.jar
-ENV LOGSTASH_DEST localhost:5000
-ENTRYPOINT ["java", "-jar", "/containerized-scgateway.jar", "--spring.logstash.dest=${LOGSTASH_DEST}"]
-EXPOSE 8763
+ENV HOST_NAME gateway
+ENV PORT 8763
+ENV DISCOVERY http://localhost:3001/eureka/
+ENTRYPOINT ["java", "-jar", "/containerized-scgateway.jar"]
