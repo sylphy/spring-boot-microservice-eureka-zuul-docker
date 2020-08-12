@@ -12,6 +12,7 @@ services:
       - PORT=3001
       - ZONE=http://discovery2:3002/eureka/
       - JAEGER_HOST=jaeger
+      - JAEGER_REPORTER_LOG_SPANS=false
     ports:
       - "3001:3001"
 
@@ -23,6 +24,7 @@ services:
       - PORT=3002
       - ZONE=http://discovery1:3001/eureka/
       - JAEGER_HOST=jaeger
+      - JAEGER_REPORTER_LOG_SPANS=false
     ports:
       - "3002:3002"
 
@@ -31,7 +33,7 @@ services:
     container_name: service-scgateway
     build:
       context: ./containerized-scgateway
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.jvm
     ports:
       - "5000:5000"
     environment:
@@ -53,6 +55,9 @@ services:
       - PORT=9001
       - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
       - JAEGER_HOST=jaeger
+    networks:
+      - default
+      - monitor-net
 
   api2:
     image: tasiraki77/service-accounts-api
@@ -64,6 +69,42 @@ services:
       - PORT=9002
       - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
       - JAEGER_HOST=jaeger
+    networks:
+      - default
+      - monitor-net
+
+  be1:
+    image: tasiraki77/backend-api
+    container_name: be1
+    build:
+      context: ./be
+      dockerfile: Dockerfile.jvm
+    ports:
+      - "9011:9011"
+    environment:
+      - HOST_NAME=be1
+      - PORT=9011
+      - DISCOVERY1=http://discovery1:3001/eureka/
+      - DISCOVERY2=http://discovery2:3002/eureka/
+      - JAEGER_HOST=jaeger
+    networks:
+      - default
+      - monitor-net
+
+  be2:
+    image: tasiraki77/backend-api
+    container_name: be2
+    ports:
+      - "9012:9012"
+    environment:
+      - HOST_NAME=be2
+      - PORT=9012
+      - DISCOVERY1=http://discovery1:3001/eureka/
+      - DISCOVERY2=http://discovery2:3002/eureka/
+      - JAEGER_HOST=jaeger
+    networks:
+      - default
+      - monitor-net
 
   db:
     image: postgres
@@ -90,3 +131,8 @@ services:
       - 16686:16686
       - 14268:14268
       - 9411:9411
+
+networks:
+  monitor-net:
+    external:
+      name: dockprom_monitor-net

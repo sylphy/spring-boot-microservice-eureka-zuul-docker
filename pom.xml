@@ -30,6 +30,7 @@
 		<module>containerized-discovery</module>
 		<module>containerized-accounts</module>
 		<module>containerized-scgateway</module>
+		<module>be</module>
 	</modules>
 
 	<dependencies>
