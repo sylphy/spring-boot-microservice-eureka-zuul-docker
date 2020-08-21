@@ -4,4 +4,5 @@ ADD target/containerized-scgateway-*.jar containerized-scgateway.jar
 ENV HOST_NAME gateway
 ENV PORT 8763
 ENV DISCOVERY http://localhost:3001/eureka/
+ENV JAEGER_HOST localhost
 ENTRYPOINT ["java", "-jar", "/containerized-scgateway.jar"]

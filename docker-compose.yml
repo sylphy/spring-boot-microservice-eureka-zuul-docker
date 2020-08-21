@@ -33,7 +33,7 @@ services:
     container_name: service-scgateway
     build:
       context: ./containerized-scgateway
-      dockerfile: Dockerfile.jvm
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     environment:
@@ -57,7 +57,6 @@ services:
       - JAEGER_HOST=jaeger
     networks:
       - default
-      - monitor-net
 
   api2:
     image: tasiraki77/service-accounts-api
@@ -71,7 +70,6 @@ services:
       - JAEGER_HOST=jaeger
     networks:
       - default
-      - monitor-net
 
   be1:
     image: tasiraki77/backend-api
@@ -89,7 +87,6 @@ services:
       - JAEGER_HOST=jaeger
     networks:
       - default
-      - monitor-net
 
   be2:
     image: tasiraki77/backend-api
@@ -104,21 +101,33 @@ services:
       - JAEGER_HOST=jaeger
     networks:
       - default
-      - monitor-net
 
   db:
     image: postgres
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_DB=mydatabase
+      - POSTGRES_DB=db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgresql/init:/docker-entrypoint-initdb.d
+
   adminer:
-    image: adminer
-    restart: always
+    image: michalhosna/adminer
     ports:
-      - 8080:8080
+      - 8000:8080
+    restart: always
+    environment:
+      - ADMINER_DRIVER=pgsql
+      - ADMINER_SERVER=db
+      - ADMINER_DB=db
+      - ADMINER_USERNAME=postgres
+      - ADMINER_PASSWORD=postgres
+#      - ADMINER_AUTOLOGIN=1
+      - ADMINER_NAME=ADMINER for PostgreSQL DB
+
   jaeger:
     image: jaegertracing/all-in-one
     environment:
@@ -132,7 +141,8 @@ services:
       - 14268:14268
       - 9411:9411
 
+volumes:
+  pgdata:
+
 networks:
-  monitor-net:
-    external:
-      name: dockprom_monitor-net
+  default:

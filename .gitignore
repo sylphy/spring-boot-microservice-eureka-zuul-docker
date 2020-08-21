@@ -1,6 +1,9 @@
+*DS_Store
 **/.mvn
 /**/target
 !.mvn/wrapper/maven-wrapper.jar
+.vs/
+.vscode/
 
 ### STS ###
 .apt_generated

@@ -1,0 +1,23 @@
+
+
+TODO
+
+・パッケージの変更
+・ディレクトリ名の変更
+・dockpromとの統合
+・DBの統合
+・Volumeの定義
+・Prometheus／Graphanaのダッシュボード作成
+・アプリのカスタムメトリクス
+・Jaegerのサンプル
+・Jaegerのログ抑制
+・GraphQL
+
+
+docker-composeでSpringBoot＋PostgreSQL環境をさらっと作る
+EurekaでService Discoveryを試す
+Spring Cloud GatewayでAPI Gatewayを試す
+Prometheus+GraphanaでSpringBootアプリを監視する
+Vegetaで負荷試験をしてみる
+Jaegerでアプリをトレーシングしてみる
+Lokiでログを収集する
