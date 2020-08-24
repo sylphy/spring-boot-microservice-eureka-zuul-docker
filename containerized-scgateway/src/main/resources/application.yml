@@ -44,5 +44,6 @@ eureka:
 
 opentracing:
   jaeger:
-    udp-sender:
-        host: ${JAEGER_HOST:localhost}
+    log-spans: false
+    http-sender:
+       url: ${JAEGER_HTTP_URL:https://localhost:14268/api/traces}

@@ -11,8 +11,7 @@ services:
       - HOST_NAME=discovery1
       - PORT=3001
       - ZONE=http://discovery2:3002/eureka/
-      - JAEGER_HOST=jaeger
-      - JAEGER_REPORTER_LOG_SPANS=false
+      - JAEGER_HTTP_URL=http://jaeger:14268/api/traces
     ports:
       - "3001:3001"
 
@@ -23,8 +22,7 @@ services:
       - HOST_NAME=discovery2
       - PORT=3002
       - ZONE=http://discovery1:3001/eureka/
-      - JAEGER_HOST=jaeger
-      - JAEGER_REPORTER_LOG_SPANS=false
+      - JAEGER_HTTP_URL=http://jaeger:14268/api/traces
     ports:
       - "3002:3002"
 
@@ -40,7 +38,7 @@ services:
       - HOST_NAME=scgateway
       - PORT=5000
       - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
-      - JAEGER_HOST=jaeger
+      - JAEGER_HTTP_URL=http://jaeger:14268/api/traces
 
   api1:
     image: tasiraki77/service-accounts-api
@@ -51,10 +49,12 @@ services:
     ports:
       - "9001:9001"
     environment:
+      - INSTANCE_ID=instance-api1
       - HOST_NAME=api1
       - PORT=9001
       - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
-      - JAEGER_HOST=jaeger
+      - JAEGER_HTTP_URL=http://jaeger:14268/api/traces
+#      - OPTS_ARGS=--eureka.client.enabled=false
     networks:
       - default
 
@@ -64,10 +64,11 @@ services:
     ports:
       - "9002:9002"
     environment:
+      - INSTANCE_ID=instance-api2
       - HOST_NAME=api2
       - PORT=9002
       - DISCOVERY=http://discovery1:3001/eureka/,http://discovery2:3002/eureka/
-      - JAEGER_HOST=jaeger
+      - JAEGER_HTTP_URL=https://jaeger:14268/api/traces
     networks:
       - default
 

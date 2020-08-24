@@ -34,6 +34,7 @@ eureka:
       defaultZone: ${DISCOVERY:http://localhost:8761/eureka/}
     should-use-dns: false
   instance:
+    instanceId: ${INSTANCE_ID:accounts}
     hostname: ${HOST_NAME:localhost}
     preferIpAddress: false
     leaseRenewalIntervalInSeconds: 1
@@ -45,5 +46,6 @@ ribbon:
 
 opentracing:
   jaeger:
-    udp-sender:
-        host: ${JAEGER_HOST:localhost}
+    log-spans: false
+    http-sender:
+       url: ${JAEGER_HTTP_URL:https://localhost:14268/api/traces}
