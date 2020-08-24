@@ -26,9 +26,9 @@ services:
     ports:
       - "3002:3002"
 
-  scgateway:
-    image: tasiraki77/service-scgateway
-    container_name: service-scgateway
+  gateway:
+    image: tasiraki77/api-gateway
+    container_name: api-scgateway
     build:
       context: ./containerized-scgateway
       dockerfile: Dockerfile
@@ -42,7 +42,7 @@ services:
 
   api1:
     image: tasiraki77/service-accounts-api
-    container_name: service-api1
+    container_name: api1
     build:
       context: ./containerized-accounts
       dockerfile: Dockerfile
@@ -60,7 +60,7 @@ services:
 
   api2:
     image: tasiraki77/service-accounts-api
-    container_name: service-api2
+    container_name: api2
     ports:
       - "9002:9002"
     environment:
